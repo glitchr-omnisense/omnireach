@@ -1,0 +1,35 @@
+<?php
+
+/*
+ * Loads every class of a package (but its tests, its harness and its
+ * scripts) with Composer's autoloader, then prints what was loaded:
+ * LoadCheck's child process. Arguments: the autoloader, the package's
+ * directory, its namespace, and classes to load besides.
+ */
+[, $autoload, $root, $namespace] = $argv;
+require $autoload;
+$root = (string) realpath($root);
+$loaded = [];
+$iterator = new RecursiveIteratorIterator(new RecursiveCallbackFilterIterator(
+    new RecursiveDirectoryIterator($root, FilesystemIterator::SKIP_DOTS),
+    static fn (SplFileInfo $file) => !in_array($file->getFilename(), ['Tests', 'docker', 'vendor', 'docs', 'bin', '.git'], true),
+));
+foreach ($iterator as $file) {
+    if (!$file instanceof SplFileInfo || 'php' !== $file->getExtension()) {
+        continue;
+    }
+    $class = $namespace.str_replace('/', '\\', substr($file->getPathname(), strlen($root) + 1, -4));
+    if (class_exists($class) || interface_exists($class) || enum_exists($class) || trait_exists($class)) {
+        $loaded[] = $class;
+    }
+}
+foreach (array_slice($argv, 4) as $class) {
+    class_exists($class);
+}
+echo json_encode([
+    'loaded' => $loaded,
+    'symbols' => [...get_declared_classes(), ...get_declared_interfaces(), ...get_declared_traits()],
+    'files' => array_values(array_filter(array_map('realpath', get_included_files()))),
+    // What Composer includes for every installed package at start (autoload "files"): not the package's doing.
+    'eager' => array_values(array_filter(array_map('realpath', is_file($f = dirname($autoload).'/composer/autoload_files.php') ? array_values(require $f) : []))),
+], JSON_UNESCAPED_SLASHES);

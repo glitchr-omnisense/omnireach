@@ -1,0 +1,61 @@
+#!/usr/bin/env php
+<?php
+
+/*
+ * Omnireach in plain PHP: no bundle, no container, no framework. A
+ * Registry with the fixed provider: a search report by query over a
+ * period, an audience report by entry page with a filter, a metric it
+ * cannot count refused; then a JSON API answered through a recorded HTTP
+ * client - an answer read with types, a refused key turned into
+ * omnireach's exception. Prints what happened and every class and file
+ * PHP loaded, as JSON.
+ */
+
+use Omnireach\Exception\InvalidKeyException;
+use Omnireach\Http\JsonApi;
+use Omnireach\Model\Dimension;
+use Omnireach\Model\Metric;
+use Omnireach\Model\ReachQuery;
+use Omnireach\Model\Row;
+use Omnireach\Registry;
+use Omnireach\Testing\FixedReachFactory;
+use Omnireach\Testing\RecordedHttpClient;
+
+require getenv('OMNIREACH_AUTOLOAD') ?: '/harness/vendor/autoload.php';
+
+$search = [
+    new Row(['query' => 'atelier poterie strasbourg', 'date' => '2026-10-20'], ['clicks' => 12, 'impressions' => 340, 'ctr' => 0.0353, 'position' => 4.2]),
+    new Row(['query' => 'cours de poterie', 'date' => '2026-10-21'], ['clicks' => 3, 'impressions' => 410, 'ctr' => 0.0073, 'position' => 11.8]),
+    new Row(['query' => 'poterie', 'date' => '2026-09-01'], ['clicks' => 1, 'impressions' => 90, 'ctr' => 0.0111, 'position' => 23.0]),
+];
+$audience = [
+    new Row(['entry_page' => '/', 'source' => 'google'], ['visitors' => 210, 'visits' => 260, 'pageviews' => 700]),
+    new Row(['entry_page' => '/ateliers', 'source' => 'google'], ['visitors' => 95, 'visits' => 110, 'pageviews' => 300]),
+    new Row(['entry_page' => '/ateliers', 'source' => 'direct'], ['visitors' => 20, 'visits' => 25, 'pageviews' => 40]),
+];
+$registry = new Registry([new FixedReachFactory($search, $audience)], ['site' => ['factory' => 'fixed', 'options' => ['site' => 'https://atelier.example.org/']]]);
+
+$report = $registry->search('site')->searchPerformance(new ReachQuery(new DateTimeImmutable('2026-10-01'), new DateTimeImmutable('2026-10-31'), [Dimension::Query]));
+$out['search'] = $report->toArray();
+$out['searchTotals'] = $report->totals();
+$entries = $registry->audience('site')->audience(new ReachQuery(new DateTimeImmutable('2026-10-01'), new DateTimeImmutable('2026-10-31'), [Dimension::EntryPage], [Metric::Visits], ['source' => 'google']));
+$out['entries'] = array_map(static fn (Row $r) => [$r->dimension(Dimension::EntryPage), $r->metric(Metric::Visits)], $entries->rows);
+$out['lastDays'] = [($q = ReachQuery::lastDays(28, today: new DateTimeImmutable('2026-10-24')))->start->format('Y-m-d'), $q->end->format('Y-m-d')];
+
+$api = new JsonApi(RecordedHttpClient::routes([
+    'POST /api/v2/query' => '{"results":[{"metrics":[120],"dimensions":["/ateliers"]}]}',
+    'GET /private' => [401, '{"error":"Invalid API key"}'],
+]), 'Example');
+$answer = $api->request('POST', 'https://stats.example.org/api/v2/query', ['json' => ['site_id' => 'example.org']], 'the query');
+$out['api'] = [$answer->string('results.0.dimensions.0'), $answer->int('results.0.metrics.0')];
+try {
+    $api->request('GET', 'https://stats.example.org/private', [], 'it');
+} catch (InvalidKeyException $e) {
+    $out['refused'] = $e->getMessage();
+}
+
+echo json_encode($out + ['loaded' => [
+    'symbols' => [...get_declared_classes(), ...get_declared_interfaces(), ...get_declared_traits()],
+    'files' => array_values(array_filter(array_map('realpath', get_included_files()))),
+    'eager' => array_values(array_filter(array_map('realpath', is_file($f = dirname((string) (new ReflectionClass(Composer\Autoload\ClassLoader::class))->getFileName()).'/autoload_files.php') ? array_values(require $f) : []))),
+]], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT), "\n";

@@ -1,0 +1,64 @@
+{
+    "name": "omniscient/omnireach",
+    "type": "library",
+    "description": "Omnireach: what outside tools know of a site's audience, under any PHP host - search queries, pages and positions from the search engines (Search Console, Bing Webmaster Tools), visitors, entry pages and sources from the analytics tools (Matomo, Plausible, Google Analytics 4), one query and one report whoever answers; a taken-over site's history over any period. Providers are packages of their own (omnireach/search-console, omnireach/bing-webmaster, omnireach/matomo, omnireach/plausible, omnireach/ga4); the Symfony and Laravel bridges live in omnibridge.",
+    "keywords": [
+        "seo",
+        "search-console",
+        "bing-webmaster",
+        "analytics",
+        "matomo",
+        "plausible",
+        "ga4",
+        "audience",
+        "framework-agnostic",
+        "omnireach"
+    ],
+    "homepage": "https://github.com/glitchr-studio/omnireach",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Marco Meyer",
+            "email": "marco.meyer@glitchr.io"
+        }
+    ],
+    "require": {
+        "php": ">=8.2",
+        "symfony/http-client-contracts": "^3.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.0",
+        "symfony/http-client": "^6.4|^7.0|^8.0"
+    },
+    "suggest": {
+        "omnireach/bing-webmaster": "Bing Webmaster Tools: queries, pages, clicks, impressions, positions",
+        "omnireach/ga4": "Google Analytics 4 (Data API): visitors, sessions, landing pages, sources",
+        "omnireach/matomo": "Matomo (Reporting API, self-hosted or cloud): visits, entry pages, referrers, countries",
+        "omnireach/plausible": "Plausible (Stats API v2, cloud or self-hosted): visitors, entry pages, sources",
+        "omnireach/search-console": "Google Search Console: queries, pages, countries, devices, clicks, impressions, CTR, positions",
+        "omniscient/omnibridge": "The host contracts; omnibridge/symfony and omnibridge/laravel wire a family into their host"
+    },
+    "autoload": {
+        "psr-4": {
+            "Omnireach\\": ""
+        },
+        "exclude-from-classmap": [
+            "/Tests/",
+            "/docker/",
+            "/bin/"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Omnireach\\Tests\\": "Tests/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-1.x": "1.x-dev"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
