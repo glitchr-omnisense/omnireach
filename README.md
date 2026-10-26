@@ -66,9 +66,19 @@ results.
 
 ## Documentation
 
+The manual, in `docs/`:
+
+- [Overview and providers](docs/index.md)
 - [Installation, in plain PHP](docs/installation.md)
-- [Writing a provider](docs/providers.md)
+- [Symfony](docs/symfony.md) and [Laravel](docs/laravel.md)
+- [Concepts](docs/concepts.md): providers, capabilities, the registry, the query, dimensions, metrics, reports
+- Usage: [search performance](docs/usage-search.md), [audience](docs/usage-audience.md)
+- [Configuration reference](docs/configuration.md)
+- [Errors](docs/errors.md)
+- [Testing](docs/testing.md)
 - [The harness](docs/harness.md)
+- [Writing a provider](docs/providers.md)
+- [Verified, and not](docs/verified.md)
 
 ## Verified, and not
 
