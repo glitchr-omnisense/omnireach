@@ -1,5 +1,5 @@
 {
-    "name": "omniscient/omnireach",
+    "name": "omnisense/omnireach",
     "type": "library",
     "description": "Omnireach: what outside tools know of a site's audience, under any PHP host - search queries, pages and positions from the search engines (Search Console, Bing Webmaster Tools), visitors, entry pages and sources from the analytics tools (Matomo, Plausible, Google Analytics 4), one query and one report whoever answers; a taken-over site's history over any period. Providers are packages of their own (omnireach/search-console, omnireach/bing-webmaster, omnireach/matomo, omnireach/plausible, omnireach/ga4); the Symfony and Laravel bridges live in omnibridge.",
     "keywords": [
@@ -14,7 +14,7 @@
         "framework-agnostic",
         "omnireach"
     ],
-    "homepage": "https://github.com/glitchr-studio/omnireach",
+    "homepage": "https://github.com/glitchr-omnisense/omnireach",
     "license": "MIT",
     "authors": [
         {
@@ -36,7 +36,10 @@
         "omnireach/matomo": "Matomo (Reporting API, self-hosted or cloud): visits, entry pages, referrers, countries",
         "omnireach/plausible": "Plausible (Stats API v2, cloud or self-hosted): visitors, entry pages, sources",
         "omnireach/search-console": "Google Search Console: queries, pages, countries, devices, clicks, impressions, CTR, positions",
-        "omniscient/omnibridge": "The host contracts; omnibridge/symfony and omnibridge/laravel wire a family into their host"
+        "omnisense/omnibridge": "The host contracts; omnibridge/symfony and omnibridge/laravel wire a family into their host"
+    },
+    "replace": {
+        "omniscient/omnireach": "self.version"
     },
     "autoload": {
         "psr-4": {

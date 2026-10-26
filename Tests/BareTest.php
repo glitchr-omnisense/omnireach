@@ -8,7 +8,7 @@ use Omnireach\Testing\LoadCheck;
 use PHPUnit\Framework\TestCase;
 
 /**
- * omniscient/omnireach with no framework: in PHP processes of their own
+ * omnisense/omnireach with no framework: in PHP processes of their own
  * (this one has loaded PHPUnit), the harness's bare script asks search
  * and audience reports through a Registry and calls a recorded JSON API - and every
  * class of the package is loaded. Nothing may come from outside the

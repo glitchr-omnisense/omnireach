@@ -1,4 +1,4 @@
-# omniscient/omnireach
+# omnisense/omnireach
 
 What outside tools know of a site's audience, under any PHP host. The search engines say which
 queries the site shows for, on which pages, at which position and with how many clicks; the
@@ -51,11 +51,11 @@ $history = $registry->audience('stats')->audience(new ReachQuery($from, $to, [Di
 
 | Package | Contract | Dimensions | Auth |
 |---|---|---|---|
-| [omnireach/search-console](https://github.com/glitchr-studio/omnireach-search-console) | search | query, page, country, device, date (combined) | service account or token |
-| [omnireach/bing-webmaster](https://github.com/glitchr-studio/omnireach-bing-webmaster) | search | query or page, date (Bing's weekly rows) | API key |
-| [omnireach/matomo](https://github.com/glitchr-studio/omnireach-matomo) | audience | entry page, page, source, country or device, date | token (or anonymous) |
-| [omnireach/plausible](https://github.com/glitchr-studio/omnireach-plausible) | audience | page, entry page, source, country, device, date (combined) | API key |
-| [omnireach/ga4](https://github.com/glitchr-studio/omnireach-ga4) | audience | page, landing page, source, country, device, date (combined) | service account or token |
+| [omnireach/search-console](https://github.com/glitchr-omnisense/omnireach-search-console) | search | query, page, country, device, date (combined) | service account or token |
+| [omnireach/bing-webmaster](https://github.com/glitchr-omnisense/omnireach-bing-webmaster) | search | query or page, date (Bing's weekly rows) | API key |
+| [omnireach/matomo](https://github.com/glitchr-omnisense/omnireach-matomo) | audience | entry page, page, source, country or device, date | token (or anonymous) |
+| [omnireach/plausible](https://github.com/glitchr-omnisense/omnireach-plausible) | audience | page, entry page, source, country, device, date (combined) | API key |
+| [omnireach/ga4](https://github.com/glitchr-omnisense/omnireach-ga4) | audience | page, landing page, source, country, device, date (combined) | service account or token |
 
 - **Hosts**: no bridge yet. omnibridge/symfony and omnibridge/laravel wire the family when the
   first site needs it.
@@ -86,7 +86,7 @@ results.
 
 ## Responsibility
 
-omniscient/omnireach and its omnireach/* providers are unofficial clients, affiliated with none of
+omnisense/omnireach and its omnireach/* providers are unofficial clients, affiliated with none of
 the services they reach. The MIT licence covers the code only and grants no right to any service
 or its data. Whoever runs them complies with each service's terms (named in each provider's README
 and in `Capabilities::$terms`) and obtains what they require.

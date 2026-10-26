@@ -1,6 +1,6 @@
 # Installation, in plain PHP
 
-    composer require omniscient/omnireach omnireach/plausible symfony/http-client
+    composer require omnisense/omnireach omnireach/plausible symfony/http-client
 
 Any implementation of `Symfony\Contracts\HttpClient\HttpClientInterface` does: Symfony's
 `HttpClient::create()`, or a `MockHttpClient` in a test.

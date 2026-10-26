@@ -59,7 +59,7 @@ final class LoadCheck
      * directories allowed.
      *
      * @param list<string> $files
-     * @param list<string> $allowed path fragments: "/vendor/psr/", "/vendor/omniscient/omnireach/"...
+     * @param list<string> $allowed path fragments: "/vendor/psr/", "/vendor/omnisense/omnireach/"...
      *
      * @return list<string>
      */
