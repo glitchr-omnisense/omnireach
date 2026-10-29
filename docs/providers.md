@@ -31,8 +31,8 @@ provider class. It requires `omnisense/omnireach` and `symfony/http-client-contr
 - **Calls** go through `Omnireach\Http\JsonApi` (every failure becomes the family's exception,
   with the tool's message); answers are read with `Support\Data`, so an unexpected shape gives
   empty values, never a `\TypeError`. Keys go in a header or a body when the tool allows it, not in
-  the URL, where logs and error messages keep them (Bing's API takes its key only in the query
-  string: [Errors](errors.md#the-messages)).
+  the URL, where logs keep them (Bing's API takes its key only in the query string; `JsonApi`
+  keeps the query out of its messages: [Errors](errors.md#the-messages)).
 - **Paging**: a tool that pages its answers is called page after page until `limit` rows are read
   or a page comes back short.
 - **The note**: `Report::$note` says what the figures are not (provisional, sampled, weekly,

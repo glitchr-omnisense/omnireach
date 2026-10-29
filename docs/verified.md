@@ -59,7 +59,6 @@ Listed where the behaviour is described, and in the family's defects list:
 
 - Matomo: a breakdown by device has up to three `mobile` rows; a filter on `device` takes Matomo's
   names, not the family's ([Audience](usage-audience.md#devices)).
-- Bing Webmaster: a network error's message holds the API key ([Errors](errors.md#the-messages)).
 
 ## Responsibility
 

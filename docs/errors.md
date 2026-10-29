@@ -20,11 +20,16 @@ Every exception Omnireach throws implements `Omnireach\Exception\OmnireachExcept
 
 `ProviderException`'s code is the HTTP status (200 for an error carried in a 200 answer or a body
 that is not JSON); `UnreachableException`'s is 0 and its previous exception the HTTP client's.
+`UnreachableException`'s message names the method and the path called, and the HTTP client's
+reason without the address it quotes (`JsonApi::reason()`): never the query string, where Bing's
+API key travels. The previous exception keeps the client's own message, URL included: a log that
+writes the whole chain writes it too.
 
 ## The messages
 
 Seen in the [harness](harness.md) on 2026-10-26, Plausible's provider on recorded answers, Bing's
-on a host that does not exist:
+on a host that does not exist (its line as the message reads since 2026-10-29, the key no longer
+in it):
 
 ```
 401       InvalidKeyException (code 401): Plausible refused the credentials (401) for the query: Invalid API key or site ID
@@ -32,7 +37,7 @@ on a host that does not exist:
 429       ProviderException (code 429): Plausible answered 429 for the query: Too many requests
 500 html  ProviderException (code 500): Plausible answered 500 for the query.
 200 html  ProviderException (code 200): Plausible answered 200 for the query: an answer that is not JSON
-network   UnreachableException: Bing Webmaster could not be reached for GetQueryStats: Could not resolve host: bing.invalid for "https://bing.invalid/json/GetQueryStats?siteUrl=https://example.org/&apikey=SECRET-KEY".
+network   UnreachableException: Bing Webmaster could not be reached for GetQueryStats (GET /json/GetQueryStats): Could not resolve host: bing.invalid.
 query     InvalidArgumentException: The period ends (2026-10-01) before it starts (2026-10-02).
 query     InvalidArgumentException: A report has at least one row: limit 0.
 query     InvalidArgumentException: No "city" dimension to filter on.
@@ -47,12 +52,6 @@ registry  InvalidConfigException: No "matomo" factory for the "x" audience provi
 The tool's own message is added after a colon when the answer carries one
 ([Concepts](concepts.md#the-http-layer)); the tool's error code is not kept apart.
 
-> [!WARNING]
-> Known defect: an `UnreachableException` carries the HTTP client's message, which names the URL
-> with its query string - Bing's API key included (`apikey=SECRET-KEY` above), where the key,
-> marked `#[\SensitiveParameter]`, is expected to stay out of messages. Do not show these messages
-> to users, and keep logs that hold them private. The other providers send their keys in a header
-> or a body, which the message does not show.
 
 ## What to catch where
 

@@ -82,6 +82,26 @@ final class RegistryTest extends TestCase
         }
     }
 
+    /**
+     * Not reached: the message names the method and the path, and the HTTP client's reason
+     * without its address - Symfony's transport messages quote the URL, query and key included.
+     */
+    public function testAnUnreachableApiIsNamedByItsPathNeverItsQuery(): void
+    {
+        $http = new \Symfony\Component\HttpClient\MockHttpClient(static function (string $method, string $url): never {
+            throw new \Symfony\Component\HttpClient\Exception\TransportException(\sprintf('Could not resolve host: api.example for "%s".', $url));
+        });
+
+        try {
+            (new JsonApi($http, 'Example'))->request('GET', 'https://user:pass@api.example/v1/stats', ['query' => ['site' => 'a.example', 'apikey' => 'sk-secret-123']], 'the statistics');
+            self::fail('no exception');
+        } catch (\Omnireach\Exception\UnreachableException $e) {
+            self::assertSame('Example could not be reached for the statistics (GET /v1/stats): Could not resolve host: api.example.', $e->getMessage());
+            self::assertStringNotContainsString('sk-secret-123', $e->getMessage());
+            self::assertStringNotContainsString('pass', $e->getMessage());
+        }
+    }
+
     private static function searchOnly(): ProviderFactory
     {
         return new class extends ProviderFactory {
