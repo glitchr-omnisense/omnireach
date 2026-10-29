@@ -21,7 +21,10 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
  *
  * An UnreachableException's message names the method and the path, and the
  * HTTP client's reason without the address it quotes: never the query, where
- * a key may travel (Bing's apikey).
+ * a key may travel (Bing's apikey). Its previous exception is a copy of the
+ * client's (Redaction::copy(): same class and code, the key masked in its
+ * message), and neither keeps its trace's arguments, where the request's
+ * query and headers stood.
  */
 final class JsonApi
 {
@@ -37,7 +40,7 @@ final class JsonApi
             $status = $response->getStatusCode();
             $body = $response->getContent(false);
         } catch (TransportExceptionInterface $e) {
-            throw new UnreachableException(\sprintf('%s could not be reached for %s (%s %s): %s', $this->provider, $what, $method, parse_url($url, \PHP_URL_PATH) ?: '/', self::reason($e->getMessage())), 0, $e);
+            throw Redaction::withoutArguments(new UnreachableException(\sprintf('%s could not be reached for %s (%s %s): %s', $this->provider, $what, $method, parse_url($url, \PHP_URL_PATH) ?: '/', self::reason($e->getMessage())), 0, Redaction::copy($e, Redaction::secrets($url, $options))));
         }
         $decoded = json_decode($body, true);
         $message = self::message(Data::of($decoded));

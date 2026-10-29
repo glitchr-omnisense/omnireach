@@ -19,11 +19,15 @@ Every exception Omnireach throws implements `Omnireach\Exception\OmnireachExcept
 | `UnreachableException` | `\RuntimeException` | the tool could not be reached: a network error, a timeout |
 
 `ProviderException`'s code is the HTTP status (200 for an error carried in a 200 answer or a body
-that is not JSON); `UnreachableException`'s is 0 and its previous exception the HTTP client's.
+that is not JSON); `UnreachableException`'s is 0 and its previous exception a copy of the HTTP
+client's.
 `UnreachableException`'s message names the method and the path called, and the HTTP client's
 reason without the address it quotes (`JsonApi::reason()`): never the query string, where Bing's
-API key travels. The previous exception keeps the client's own message, URL included: a log that
-writes the whole chain writes it too.
+API key travels. The previous exception is a copy of the client's (`Http\Redaction::copy()`): the
+same class and code, the message with the URL's key parameters and password masked (`apikey=***`),
+its own previous copied the same way. Neither keeps its trace's arguments, where the request's
+query, headers and bearer token stood: a log that writes the whole chain, arguments included
+(`zend.exception_ignore_args` off), holds no key.
 
 ## The messages
 

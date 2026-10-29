@@ -102,6 +102,40 @@ final class RegistryTest extends TestCase
         }
     }
 
+    /**
+     * Nothing of the key anywhere in what a log of the whole chain writes: the messages, the
+     * previous exception's (a copy of the HTTP client's, its class and code kept, the key's
+     * parameter and the URL's password masked), and the traces' arguments, which PHP keeps
+     * unless zend.exception_ignore_args is on.
+     */
+    public function testNoPartOfAnUnreachableChainHoldsTheKey(): void
+    {
+        $ignoreArgs = ini_set('zend.exception_ignore_args', '0');
+        $http = new \Symfony\Component\HttpClient\MockHttpClient(static function (string $method, string $url): never {
+            throw new \Symfony\Component\HttpClient\Exception\TransportException(\sprintf('Could not resolve host: api.example for "%s".', $url), 6);
+        });
+
+        try {
+            (new JsonApi($http, 'Example'))->request('GET', 'https://user:url-password-123@api.example/v1/stats', ['query' => ['site' => 'a.example', 'apikey' => 'sk-secret-123'], 'auth_bearer' => 'bearer-secret-456'], 'the statistics');
+            self::fail('no exception');
+        } catch (\Omnireach\Exception\UnreachableException $e) {
+            $previous = $e->getPrevious();
+            self::assertInstanceOf(\Symfony\Component\HttpClient\Exception\TransportException::class, $previous);
+            self::assertSame(6, $previous->getCode());
+            self::assertStringContainsString('apikey=***', $previous->getMessage());
+            for ($one = $e; null !== $one; $one = $one->getPrevious()) {
+                foreach (['sk-secret-123', 'url-password-123', 'bearer-secret-456'] as $secret) {
+                    self::assertStringNotContainsString($secret, $one->getMessage());
+                    self::assertStringNotContainsString($secret, print_r($one->getTrace(), true));
+                    self::assertStringNotContainsString($secret, $one->getTraceAsString());
+                }
+            }
+            self::assertStringNotContainsString('sk-secret-123', (string) $e);
+        } finally {
+            ini_set('zend.exception_ignore_args', false !== $ignoreArgs ? $ignoreArgs : '1');
+        }
+    }
+
     private static function searchOnly(): ProviderFactory
     {
         return new class extends ProviderFactory {
