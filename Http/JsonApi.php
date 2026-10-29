@@ -45,16 +45,16 @@ final class JsonApi
         $decoded = json_decode($body, true);
         $message = self::message(Data::of($decoded));
         if (401 === $status || 403 === $status) {
-            throw InvalidKeyException::refused($this->provider, $what, $status, $message);
+            throw Redaction::withoutArguments(InvalidKeyException::refused($this->provider, $what, $status, $message));
         }
         if (404 === $status) {
-            throw NotFoundException::of($this->provider, $what, $message);
+            throw Redaction::withoutArguments(NotFoundException::of($this->provider, $what, $message));
         }
         if ($status >= 400) {
-            throw ProviderException::answered($this->provider, $what, $status, $message);
+            throw Redaction::withoutArguments(ProviderException::answered($this->provider, $what, $status, $message));
         }
         if (!\is_array($decoded)) {
-            throw ProviderException::answered($this->provider, $what, $status, 'an answer that is not JSON');
+            throw Redaction::withoutArguments(ProviderException::answered($this->provider, $what, $status, 'an answer that is not JSON'));
         }
 
         return new Data($decoded);

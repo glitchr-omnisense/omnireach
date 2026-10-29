@@ -27,7 +27,8 @@ API key travels. The previous exception is a copy of the client's (`Http\Redacti
 same class and code, the message with the URL's key parameters and password masked (`apikey=***`),
 its own previous copied the same way. Neither keeps its trace's arguments, where the request's
 query, headers and bearer token stood: a log that writes the whole chain, arguments included
-(`zend.exception_ignore_args` off), holds no key.
+(`zend.exception_ignore_args` off), holds no key. Nor does an error answered (a refused key, nothing there, a server error, a body
+that is not JSON): every exception `JsonApi::request()` throws leaves its trace's arguments out.
 
 ## The messages
 
