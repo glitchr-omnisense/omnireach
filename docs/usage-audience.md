@@ -64,7 +64,7 @@ $sources = $registry->audience('stats')->audience(ReachQuery::lastDays(28, [Dime
 ```
 
 Filters are exact and case-sensitive, on the family's values: a country `FR`, a device `mobile`
-(but see Matomo [below](#devices)), a source as the tool names it - Matomo's referrer name, GA4's
+([Matomo's](#devices) included), a source as the tool names it - Matomo's referrer name, GA4's
 `sessionSource`, Plausible's `visit:source` - so a report by source shows which values to filter
 with. The query is readonly: build a new one for other filters, `lastDays()` takes none.
 
@@ -88,23 +88,10 @@ time, not one tool with another.
 ## Devices
 
 Plausible and GA4 give `desktop`, `mobile`, `tablet`. Matomo has more types: its smartphones,
-phablets and feature phones become `mobile`, every other type is Matomo's own label lower-cased
+phablets and feature phones become one `mobile` row (their counts summed), and a `device` filter
+`mobile` is sent to Matomo as those three types; every other type is Matomo's own label lower-cased
 (`desktop`, `tablet`, `console`, `tv`, `portable media player`, `unknown`...), and types with no
 visit are kept as rows of 0.
-
-> [!WARNING]
-> Known defect: Matomo's smartphones, phablets and feature phones each give a row labelled
-> `mobile` (seen live on Matomo's demo, 2026-10-26: three `mobile` rows of 25867, 976 and 10
-> visits), where one `mobile` row summing them is expected. Sum the rows by device in the
-> application until it is fixed.
-
-> [!WARNING]
-> Known defect: a Matomo report filtered on `device` sends the value as Matomo's `deviceType`
-> segment, so `['device' => 'mobile']` - the family's unit - is refused by Matomo
-> (`ProviderException`: `Invalid 'log_visit.config_device_type' segment value mobile`, seen live
-> on 2026-10-26), where a filter in the family's units is expected. Matomo's own names
-> (`smartphone`) are accepted, but then a report broken down by device drops every row, since its
-> rows say `mobile`.
 
 ## Pages, before and after
 

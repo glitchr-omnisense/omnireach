@@ -38,7 +38,8 @@ There is no conformance suite shared by the providers ([Testing](testing.md#no-c
   Matomo's public demo, the whole site over a week and its entry pages day by day.
 - For this manual, 2026-10-26, 14:49-14:51 UTC: the [Installation](installation.md#a-providers-api)
   script against the same demo, and a report by device and with device filters
-  ([Audience](usage-audience.md#devices)), which showed the two known defects of Matomo's devices.
+  ([Audience](usage-audience.md#devices)), which showed two defects of Matomo's devices, fixed on
+  2026-10-29 (three `mobile` rows, a `mobile` filter refused).
   Every segment the demo was asked for (`deviceType==smartphone`, `deviceType==desktop`) answered
   0 visits: the demo does not process segments on the fly, so filters on Matomo were not verified
   live.
@@ -55,10 +56,7 @@ There is no conformance suite shared by the providers ([Testing](testing.md#no-c
 
 ## Known defects
 
-Listed where the behaviour is described, and in the family's defects list:
-
-- Matomo: a breakdown by device has up to three `mobile` rows; a filter on `device` takes Matomo's
-  names, not the family's ([Audience](usage-audience.md#devices)).
+None left: those the manuals found were fixed on 2026-10-29.
 
 ## Responsibility
 
